@@ -10,3 +10,6 @@ wheels/
 .venv
 
 database.db
+testme/
+docs/
+.DS_Store

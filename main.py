@@ -1,104 +1,56 @@
 import os
-import sqlite3
 
-DATABASE = "database.db"
+import customtkinter
 
 
-def create_database():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+class ContentFrame(customtkinter.CTkScrollableFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
 
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS warranty_period (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            facebook TEXT,
-            phone_number INTEGER,
-            expired_date INTEGER
+
+class FunctionsFrame(customtkinter.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
+        self.add_new_button = customtkinter.CTkButton(self, text="New")
+        self.add_new_button.pack(padx=10, pady=(15, 10))
+
+        self.change_appr_mode_button = customtkinter.CTkButton(
+            master, text="Light", command=self.change_appearance_mode
         )
-        """
-    )
+        self.change_appr_mode_button.pack(
+            padx=10, pady=(0, 10), side="bottom", fill="x"
+        )
 
-    conn.close()
-
-
-def add_warranty(user_info):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        """
-        INSERT INTO warranty_period
-            (name, facebook, phone_number, expired_date)
-        values
-            (?, ?, ?, ?)
-        """,
-        (
-            user_info["name"],
-            user_info["facebook"],
-            user_info["phone_number"],
-            user_info["expired_date"],
-        ),
-    )
-
-    conn.commit()
-    conn.close()
+    def change_appearance_mode(self):
+        if customtkinter.get_appearance_mode() == "Light":
+            customtkinter.set_appearance_mode("dark")
+            self.change_appr_mode_button.configure(text="Dark")
+        else:
+            customtkinter.set_appearance_mode("light")
+            self.change_appr_mode_button.configure(text="Light")
 
 
-def get_all_warranties():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+class App(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
 
-    cursor.execute(
-        """
-        SELECT * FROM warranty_period
-        """
-    )
+        customtkinter.set_appearance_mode("light")
+        self.title("Warranty")
+        self.geometry("1300x700")
 
-    result = [dict(i) for i in cursor.fetchall()]
-    conn.close()
+        self.content_frame = ContentFrame(self)
+        self.content_frame.pack(
+            padx=(5, 10), pady=10, side="right", fill="both", expand=True
+        )
 
-    return result
-
-
-def print_help():
-    print(
-        "help    show help messages\n"
-        "exit    exit the program\n"
-        "add     add a new warranty\n"
-        "list    list all the warranties"
-    )
+        self.functions_frame = FunctionsFrame(self, width=220)
+        self.functions_frame.pack(padx=10, pady=10, side="left", fill="y")
 
 
 def main():
-    print_help()
-
-    if not os.path.exists(DATABASE):
-        create_database()
-
-    while True:
-        command = input(">: ")
-
-        if command == "exit":
-            exit()
-
-        elif command == "help":
-            print_help()
-
-        elif command == "add":
-            user_info = {
-                "name": input("name: "),
-                "facebook": input("facebook: "),
-                "phone_number": input("phone_number: "),
-                "expired_date": input("expired_date: "),
-            }
-            add_warranty(user_info)
-
-        elif command == "list":
-            all_warranties = get_all_warranties()
-            [print(i) for i in all_warranties]
+    app = App()
+    app.mainloop()
 
 
 if __name__ == "__main__":
