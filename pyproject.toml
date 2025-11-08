@@ -6,4 +6,5 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "customtkinter>=5.2.2",
+    "tkcalendar>=1.6.1",
 ]

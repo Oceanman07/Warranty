@@ -1,10 +1,10 @@
 import sqlite3
 
-DATABASE = "database.db"
+DATABASE_PATH = "database.db"
 
 
 def create_database():
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
 
     cursor.execute(
@@ -15,15 +15,14 @@ def create_database():
             facebook TEXT,
             phone_number INTEGER,
             expired_date INTEGER
-        )
-        """
+        ) """
     )
 
     conn.close()
 
 
-def add_warranty(user_info):
-    conn = sqlite3.connect(DATABASE)
+def add_warranty(new_warranty):
+    conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
 
     cursor.execute(
@@ -34,10 +33,10 @@ def add_warranty(user_info):
             (?, ?, ?, ?)
         """,
         (
-            user_info["name"],
-            user_info["facebook"],
-            user_info["phone_number"],
-            user_info["expired_date"],
+            new_warranty["name"],
+            new_warranty["facebook"],
+            new_warranty["phone_number"],
+            new_warranty["expired_date"],
         ),
     )
 
@@ -46,7 +45,7 @@ def add_warranty(user_info):
 
 
 def get_all_warranties():
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
