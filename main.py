@@ -5,6 +5,7 @@ import customtkinter
 
 from src import database
 from src.frame import AllWarrentiesFrame, AddNewWarrantyFrame, SidebarFrame
+from src.popup import DetailWarrantyPopop
 
 
 class App(customtkinter.CTk):
@@ -57,7 +58,7 @@ class App(customtkinter.CTk):
             font=self.font,
             command=self.move_to_adding_new_warranty_page,
         )
-        self.move_to_adding_new_warranty_page_button.pack(padx=10, pady=(5, 10))
+        self.move_to_adding_new_warranty_page_button.pack(padx=10, pady=(0, 10))
 
         self.open_facebook_button = customtkinter.CTkButton(
             self.sidebar_frame,
@@ -65,7 +66,7 @@ class App(customtkinter.CTk):
             font=self.font,
             command=self.open_facebook,
         )
-        self.open_facebook_button.pack(padx=10, pady=(5, 10))
+        self.open_facebook_button.pack(padx=10, pady=(0, 10))
 
         self.change_appr_mode_button = customtkinter.CTkButton(
             self.sidebar_frame,
@@ -78,6 +79,15 @@ class App(customtkinter.CTk):
             pady=(0, 10),
             side="bottom",
         )
+
+        # ============== Popup ==============
+        self.show_detail_warranty_button = customtkinter.CTkButton(
+            self.sidebar_frame,
+            text="More",
+            font=self.font,
+            command=self.show_detail_warranty,
+        )
+        self.show_detail_warranty_button.pack(padx=10, pady=(0, 10))
 
     def change_appearance_mode(self):
         if customtkinter.get_appearance_mode() == "Light":
@@ -100,6 +110,7 @@ class App(customtkinter.CTk):
         facebook = self.adding_new_warranty_frame.facebook_entry
         phone_number = self.adding_new_warranty_frame.phone_number_entry
         expired_date = self.adding_new_warranty_frame.expired_date_entry
+        note = self.adding_new_warranty_frame.note_entry
 
         if name == "" or facebook == "" or phone_number == "":
             return
@@ -109,15 +120,24 @@ class App(customtkinter.CTk):
             "facebook": facebook,
             "phone_number": phone_number,
             "expired_date": expired_date,
+            "note": note,
         }
         database.add_warranty(new_warranty)
 
         self.adding_new_warranty_frame.clear_entries()
 
     def open_facebook(self):
+        if not self.all_warrenties_frame.is_selected_button():
+            return
+
         facebook = self.all_warrenties_frame.selected_warranty_facebook
-        if facebook:
-            webbrowser.open(facebook)
+        webbrowser.open(facebook)
+
+    def show_detail_warranty(self):
+        if not self.all_warrenties_frame.is_selected_button():
+            return
+
+        DetailWarrantyPopop(self, self.all_warrenties_frame)
 
 
 def main():

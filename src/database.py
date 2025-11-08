@@ -14,7 +14,8 @@ def create_database():
             name TEXT,
             facebook TEXT,
             phone_number INTEGER,
-            expired_date INTEGER
+            expired_date INTEGER,
+            note TEXT
         ) """
     )
 
@@ -28,15 +29,16 @@ def add_warranty(new_warranty):
     cursor.execute(
         """
         INSERT INTO warranty_period
-            (name, facebook, phone_number, expired_date)
+            (name, facebook, phone_number, expired_date, note)
         values
-            (?, ?, ?, ?)
+            (?, ?, ?, ?, ?)
         """,
         (
             new_warranty["name"],
             new_warranty["facebook"],
             new_warranty["phone_number"],
             new_warranty["expired_date"],
+            new_warranty["note"],
         ),
     )
 

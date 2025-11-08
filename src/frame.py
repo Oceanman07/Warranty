@@ -35,11 +35,32 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
 
         self.list()
 
+    def is_selected_button(self):
+        return self.__selected_button
+
+    @property
+    def selected_warranty_name(self):
+        return self.__warranties_info[self.__selected_button]["name"]
+
     @property
     def selected_warranty_facebook(self):
-        selected_warranty = self.__warranties_info.get(self.__selected_button, None)
-        if selected_warranty:
-            return selected_warranty["facebook"]
+        return self.__warranties_info[self.__selected_button]["facebook"]
+
+    @property
+    def selected_warranty_phone_number(self):
+        return self.__warranties_info[self.__selected_button]["phone_number"]
+
+    @property
+    def selected_warranty_expired_datetime(self):
+        return self.__warranties_info[self.__selected_button]["expired_datetime"]
+
+    @property
+    def selected_warranty_status(self):
+        return self.__warranties_info[self.__selected_button]["warranty_status"]
+
+    @property
+    def selected_warranty_note(self):
+        return self.__warranties_info[self.__selected_button]["note"]
 
     def __do_selected(self, self_button: customtkinter.CTkButton):
         if self.__selected_button:
@@ -84,6 +105,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
                 "phone_number": warranty["phone_number"],
                 "expired_unix_time": warranty["expired_date"],
                 "expired_datetime": utils.convert_datetime(warranty["expired_date"]),
+                "note": warranty["note"],
                 "warranty_status": self.__get_warranty_status(warranty["expired_date"]),
             }
             self.__add_warranty_info(info)
@@ -130,6 +152,12 @@ class AddNewWarrantyFrame(customtkinter.CTkFrame):
         )
         self.__expired_date_entry.pack(padx=20, pady=(2, 20), fill="x")
 
+        customtkinter.CTkLabel(self, text="Note:", font=self.__font).pack(
+            padx=20, anchor="w"
+        )
+        self.__note_entry = customtkinter.CTkTextbox(self, font=self.__font)
+        self.__note_entry.pack(padx=20, pady=(2, 20), fill="both", expand=True)
+
     def clear_entries(self):
         for entry in (
             self.__name_entry,
@@ -139,6 +167,7 @@ class AddNewWarrantyFrame(customtkinter.CTkFrame):
             entry.delete(0, "end")
 
         self.__expired_date_entry.set_date(datetime.date.today())
+        self.__note_entry.delete("0.0", "end")
 
     @property
     def name_entry(self):
@@ -155,3 +184,7 @@ class AddNewWarrantyFrame(customtkinter.CTkFrame):
     @property
     def expired_date_entry(self):
         return utils.convert_unix_time(self.__expired_date_entry.get_date())
+
+    @property
+    def note_entry(self):
+        return self.__note_entry.get("0.0", "end").strip()
