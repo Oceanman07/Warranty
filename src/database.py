@@ -1,9 +1,12 @@
+import os
 import sqlite3
 
-DATABASE_PATH = "database.db"
+from .constants import STORED_PATH, DATABASE_PATH
 
 
 def create_database():
+    os.makedirs(STORED_PATH, exist_ok=True)
+
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
 

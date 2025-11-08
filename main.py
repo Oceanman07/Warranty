@@ -4,6 +4,7 @@ import webbrowser
 import customtkinter
 
 from src import database
+from src.constants import DATABASE_PATH
 from src.frame import AllWarrentiesFrame, AddNewWarrantyFrame, SidebarFrame
 from src.popup import DetailWarrantyPopop
 
@@ -141,7 +142,7 @@ class App(customtkinter.CTk):
 
 
 def main():
-    if not os.path.exists(database.DATABASE_PATH):
+    if not os.path.exists(DATABASE_PATH):
         database.create_database()
 
     app = App()
