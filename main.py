@@ -12,7 +12,9 @@ class App(customtkinter.CTk):
 
         customtkinter.set_appearance_mode("light")
         self.title("Warranty")
-        self.geometry("1300x700")
+        self.geometry("1330x790")
+
+        self.font = customtkinter.CTkFont(family="JetBrains Mono")
 
         # ============== MainContentFrame ==========
         self.content_frame = customtkinter.CTkFrame(self, corner_radius=0)
@@ -28,7 +30,10 @@ class App(customtkinter.CTk):
         self.all_warrenties_frame.lift()
 
         self.adding_new_warranty_button = customtkinter.CTkButton(
-            self.adding_new_warranty_frame, text="Add", command=self.add_new_warranty
+            self.adding_new_warranty_frame,
+            text="Add",
+            font=self.font,
+            command=self.add_new_warranty,
         )
         self.adding_new_warranty_button.pack(
             padx=10, pady=(0, 10), side="bottom", anchor="e"
@@ -38,19 +43,26 @@ class App(customtkinter.CTk):
         self.sidebar_frame = SidebarFrame(self, width=220)
 
         self.move_to_all_warranties_page_button = customtkinter.CTkButton(
-            self.sidebar_frame, text="All", command=self.move_to_all_warranties_page
+            self.sidebar_frame,
+            text="All",
+            font=self.font,
+            command=self.move_to_all_warranties_page,
         )
         self.move_to_all_warranties_page_button.pack(padx=10, pady=(15, 10))
 
         self.move_to_adding_new_warranty_page_button = customtkinter.CTkButton(
             self.sidebar_frame,
             text="New",
+            font=self.font,
             command=self.move_to_adding_new_warranty_page,
         )
         self.move_to_adding_new_warranty_page_button.pack(padx=10, pady=(5, 10))
 
         self.change_appr_mode_button = customtkinter.CTkButton(
-            self.sidebar_frame, text="Light", command=self.change_appearance_mode
+            self.sidebar_frame,
+            text="Light",
+            font=self.font,
+            command=self.change_appearance_mode,
         )
         self.change_appr_mode_button.pack(
             padx=10,
