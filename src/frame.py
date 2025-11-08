@@ -1,4 +1,5 @@
 import datetime
+import functools
 
 import customtkinter
 import tkcalendar
@@ -29,23 +30,41 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         )
 
         self.__current_unix_time = int(datetime.datetime.now().timestamp())
+        self.__warranties_info = {}
+        self.__selected_button = None
 
         self.list()
 
-    def clear_items(self):
-        for item in self.winfo_children():
-            item.destroy()
+    @property
+    def selected_warranty_facebook(self):
+        selected_warranty = self.__warranties_info.get(self.__selected_button, None)
+        if selected_warranty:
+            return selected_warranty["facebook"]
+
+    def __do_selected(self, self_button: customtkinter.CTkButton):
+        if self.__selected_button:
+            self.__selected_button.configure(fg_color=self.__fg_color)
+
+        self.__selected_button = self_button
+        self.__selected_button.configure(fg_color="#3B8ED0")
 
     def __add_warranty_info(self, info):
-        customtkinter.CTkButton(
+        text = f"{info['name']}{' ' * (41 - len(info['name']))}{info['phone_number']}{' ' * (31 - len(str(info['phone_number'])))}{info['expired_datetime']}{' ' * (25 - len(info['expired_datetime']))}{info['warranty_status']}"
+        info_button = customtkinter.CTkButton(
             self,
             font=self.__font,
-            text=info,
+            text=text,
             anchor="w",
             text_color=self.__text_color,
             fg_color=self.__fg_color,
             corner_radius=0,
-        ).pack(fill="x", pady=(0, 5))
+        )
+        info_button.configure(
+            command=functools.partial(self.__do_selected, info_button),
+        )
+        info_button.pack(fill="x", pady=(0, 5))
+
+        self.__warranties_info[info_button] = info
 
     def __get_warranty_status(self, expired_unix_time):
         if expired_unix_time - self.__current_unix_time <= 0:
@@ -57,14 +76,19 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
 
         all_warrenties = database.get_all_warranties()
         for warranty in all_warrenties:
-            name = warranty["name"]
-            phone_number = warranty["phone_number"]
-            expired_unix_time = warranty["expired_date"]
-            expired_datetime = utils.convert_datetime(expired_unix_time)
-            warranty_status = self.__get_warranty_status(expired_unix_time)
-
-            info = f"{name}{' ' * (41 - len(name))}{phone_number}{' ' * (31 - len(str(phone_number)))}{expired_datetime}{' ' * (25 - len(expired_datetime))}{warranty_status}"
+            info = {
+                "name": warranty["name"],
+                "facebook": warranty["facebook"],
+                "phone_number": warranty["phone_number"],
+                "expired_unix_time": warranty["expired_date"],
+                "expired_datetime": utils.convert_datetime(warranty["expired_date"]),
+                "warranty_status": self.__get_warranty_status(warranty["expired_date"]),
+            }
             self.__add_warranty_info(info)
+
+    def clear_items(self):
+        for item in self.winfo_children():
+            item.destroy()
 
 
 class AddNewWarrantyFrame(customtkinter.CTkFrame):

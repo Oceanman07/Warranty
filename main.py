@@ -1,4 +1,5 @@
 import os
+import webbrowser
 
 import customtkinter
 
@@ -58,6 +59,14 @@ class App(customtkinter.CTk):
         )
         self.move_to_adding_new_warranty_page_button.pack(padx=10, pady=(5, 10))
 
+        self.open_facebook_button = customtkinter.CTkButton(
+            self.sidebar_frame,
+            text="Open facebook",
+            font=self.font,
+            command=self.open_facebook,
+        )
+        self.open_facebook_button.pack(padx=10, pady=(5, 10))
+
         self.change_appr_mode_button = customtkinter.CTkButton(
             self.sidebar_frame,
             text="Light",
@@ -104,6 +113,11 @@ class App(customtkinter.CTk):
         database.add_warranty(new_warranty)
 
         self.adding_new_warranty_frame.clear_entries()
+
+    def open_facebook(self):
+        facebook = self.all_warrenties_frame.selected_warranty_facebook
+        if facebook:
+            webbrowser.open(facebook)
 
 
 def main():
