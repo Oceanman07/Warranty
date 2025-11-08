@@ -18,9 +18,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         self.__font = customtkinter.CTkFont(family="JetBrains Mono", size=16)
         self.__text_color = "#242424"
         self.__fg_color = "#C4C4C4"
-        self.__title = (
-            f"Full name{' ' * (40 - 9)}Phone number{' ' * (31 - 12)}Expired date"
-        )
+        self.__title = f"Full name{' ' * (40 - 9)}Phone number{' ' * (31 - 12)}Expired date{' ' * (26 - 12)}Status"
 
         super().__init__(
             master,
@@ -29,6 +27,8 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
             label_anchor="w",
             label_fg_color="#F2F2F2",
         )
+
+        self.__current_unix_time = int(datetime.datetime.now().timestamp())
 
         self.list()
 
@@ -47,6 +47,11 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
             corner_radius=0,
         ).pack(fill="x", pady=(0, 5))
 
+    def __get_warranty_status(self, expired_unix_time):
+        if expired_unix_time - self.__current_unix_time <= 0:
+            return "Expired"
+        return "Active"
+
     def list(self):
         self.clear_items()
 
@@ -54,9 +59,11 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         for warranty in all_warrenties:
             name = warranty["name"]
             phone_number = warranty["phone_number"]
-            expired_date = warranty["expired_date"]
+            expired_unix_time = warranty["expired_date"]
+            expired_datetime = utils.convert_datetime(expired_unix_time)
+            warranty_status = self.__get_warranty_status(expired_unix_time)
 
-            info = f"{name}{' ' * (40 - len(name))}{phone_number}{' ' * (31 - len(str(phone_number)))}{expired_date}"
+            info = f"{name}{' ' * (41 - len(name))}{phone_number}{' ' * (31 - len(str(phone_number)))}{expired_datetime}{' ' * (25 - len(expired_datetime))}{warranty_status}"
             self.__add_warranty_info(info)
 
 
