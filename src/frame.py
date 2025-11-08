@@ -73,6 +73,8 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
 
     def list(self):
         self.clear_items()
+        self.__warranties_info.clear()
+        self.__selected_button = None
 
         all_warrenties = database.get_all_warranties()
         for warranty in all_warrenties:
