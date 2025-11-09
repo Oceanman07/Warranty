@@ -43,7 +43,7 @@ class App(customtkinter.CTk):
         )
 
         # ============== SidebarFrame ==============
-        self.sidebar_frame = SidebarFrame(self, width=220)
+        self.sidebar_frame = SidebarFrame(self)
 
         self.move_to_all_warranties_page_button = customtkinter.CTkButton(
             self.sidebar_frame,
@@ -146,7 +146,22 @@ class App(customtkinter.CTk):
         if not self.all_warrenties_frame.is_selected_button():
             return
 
-        DetailWarrantyPopop(self, self.all_warrenties_frame)
+        detail_warranty_popup = DetailWarrantyPopop(self)
+        detail_warranty_popup.show_name(
+            self.all_warrenties_frame.selected_warranty_name
+        )
+        detail_warranty_popup.show_phone_number(
+            self.all_warrenties_frame.selected_warranty_phone_number
+        )
+        detail_warranty_popup.show_expired_date(
+            self.all_warrenties_frame.selected_warranty_expired_datetime
+        )
+        detail_warranty_popup.show_warranty_status(
+            self.all_warrenties_frame.selected_warranty_status
+        )
+        detail_warranty_popup.show_note(
+            self.all_warrenties_frame.selected_warranty_note
+        )
 
     def delete_warranty(self):
         if not self.all_warrenties_frame.is_selected_button():

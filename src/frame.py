@@ -9,8 +9,8 @@ from . import utils
 
 
 class SidebarFrame(customtkinter.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, master):
+        super().__init__(master, width=220)
         self.pack(padx=10, pady=10, side="left", fill="y")
 
 
