@@ -69,6 +69,14 @@ class App(customtkinter.CTk):
         )
         self.open_facebook_button.pack(padx=10, pady=(0, 10))
 
+        self.delete_warranty_button = customtkinter.CTkButton(
+            self.sidebar_frame,
+            text="Delete",
+            font=self.font,
+            command=self.delete_warranty,
+        )
+        self.delete_warranty_button.pack(padx=10, pady=(0, 10))
+
         self.change_appr_mode_button = customtkinter.CTkButton(
             self.sidebar_frame,
             text="Light",
@@ -139,6 +147,14 @@ class App(customtkinter.CTk):
             return
 
         DetailWarrantyPopop(self, self.all_warrenties_frame)
+
+    def delete_warranty(self):
+        if not self.all_warrenties_frame.is_selected_button():
+            return
+
+        self.all_warrenties_frame.delete_selected_warranty()
+        self.all_warrenties_frame.list()
+        self.all_warrenties_frame.lift()
 
 
 def main():

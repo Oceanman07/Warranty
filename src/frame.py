@@ -62,6 +62,13 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
     def selected_warranty_note(self):
         return self.__warranties_info[self.__selected_button]["note"]
 
+    def delete_selected_warranty(self):
+        if self.__selected_button:
+            warranty_id = self.__warranties_info[self.__selected_button]["id"]
+            database.delete_warranty(warranty_id)
+            self.__selected_button.destroy()
+            self.__selected_button = None
+
     def __do_selected(self, self_button: customtkinter.CTkButton):
         if self.__selected_button:
             self.__selected_button.configure(fg_color=self.__fg_color)
@@ -100,10 +107,10 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         all_warrenties = database.get_all_warranties()
         for warranty in all_warrenties:
             info = {
+                "id": warranty["id"],
                 "name": warranty["name"],
                 "facebook": warranty["facebook"],
                 "phone_number": warranty["phone_number"],
-                "expired_unix_time": warranty["expired_date"],
                 "expired_datetime": utils.convert_datetime(warranty["expired_date"]),
                 "note": warranty["note"],
                 "warranty_status": self.__get_warranty_status(warranty["expired_date"]),

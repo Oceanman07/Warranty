@@ -64,3 +64,18 @@ def get_all_warranties():
     conn.close()
 
     return result
+
+
+def delete_warranty(id):
+    conn = sqlite3.connect(DATABASE_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM warranty_period where id=?
+        """,
+        (id,),
+    )
+
+    conn.commit()
+    conn.close()
