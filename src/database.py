@@ -33,7 +33,7 @@ def add_warranty(new_warranty):
         """
         INSERT INTO warranty_period
             (name, facebook, phone_number, expired_date, note)
-        values
+        VALUES
             (?, ?, ?, ?, ?)
         """,
         (
@@ -66,13 +66,34 @@ def get_all_warranties():
     return result
 
 
+def update_warranty(new_warranty):
+    conn = sqlite3.connect(DATABASE_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE warranty_period SET name=?, facebook=?, phone_number=?, expired_date=? WHERE id=?
+        """,
+        (
+            new_warranty["name"],
+            new_warranty["facebook"],
+            new_warranty["phone_number"],
+            new_warranty["expired_date"],
+            new_warranty["id"],
+        ),
+    )
+
+    conn.commit()
+    conn.close()
+
+
 def delete_warranty(id):
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
 
     cursor.execute(
         """
-        DELETE FROM warranty_period where id=?
+        DELETE FROM warranty_period WHERE id=?
         """,
         (id,),
     )

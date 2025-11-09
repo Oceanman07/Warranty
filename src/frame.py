@@ -39,6 +39,10 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         return self.__selected_button
 
     @property
+    def selected_warranty_id(self):
+        return self.__warranties_info[self.__selected_button]["id"]
+
+    @property
     def selected_warranty_name(self):
         return self.__warranties_info[self.__selected_button]["name"]
 
@@ -122,7 +126,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
             item.destroy()
 
 
-class AddNewWarrantyFrame(customtkinter.CTkFrame):
+class NewWarrantyFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         self.__font = customtkinter.CTkFont(family="JetBrains Mono", size=19)
@@ -165,17 +169,6 @@ class AddNewWarrantyFrame(customtkinter.CTkFrame):
         self.__note_entry = customtkinter.CTkTextbox(self, font=self.__font)
         self.__note_entry.pack(padx=20, pady=(2, 20), fill="both", expand=True)
 
-    def clear_entries(self):
-        for entry in (
-            self.__name_entry,
-            self.__facebook_entry,
-            self.__phone_number_entry,
-        ):
-            entry.delete(0, "end")
-
-        self.__expired_date_entry.set_date(datetime.date.today())
-        self.__note_entry.delete("0.0", "end")
-
     @property
     def name_entry(self):
         return self.__name_entry.get().strip()
@@ -195,3 +188,29 @@ class AddNewWarrantyFrame(customtkinter.CTkFrame):
     @property
     def note_entry(self):
         return self.__note_entry.get("0.0", "end").strip()
+
+    def insert_name_entry(self, entry):
+        self.__name_entry.insert(0, entry)
+
+    def insert_facebook_entry(self, entry):
+        self.__facebook_entry.insert(0, entry)
+
+    def insert_phone_number_entry(self, entry):
+        self.__phone_number_entry.insert(0, entry)
+
+    def insert_expired_date(self, entry):
+        self.__expired_date_entry.set_date(entry)
+
+    def insert_note_entry(self, entry):
+        self.__note_entry.insert("0.0", entry)
+
+    def clear_entries(self):
+        for entry in (
+            self.__name_entry,
+            self.__facebook_entry,
+            self.__phone_number_entry,
+        ):
+            entry.delete(0, "end")
+
+        self.__expired_date_entry.set_date(datetime.date.today())
+        self.__note_entry.delete("0.0", "end")

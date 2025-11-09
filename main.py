@@ -1,11 +1,12 @@
 import os
 import webbrowser
+import functools
 
 import customtkinter
 
 from src import database
 from src.constants import DATABASE_PATH
-from src.frame import AllWarrentiesFrame, AddNewWarrantyFrame, SidebarFrame
+from src.frame import AllWarrentiesFrame, NewWarrantyFrame, SidebarFrame
 from src.popup import DetailWarrantyPopop
 
 
@@ -26,19 +27,27 @@ class App(customtkinter.CTk):
         )
 
         self.all_warrenties_frame = AllWarrentiesFrame(self.content_frame)
-        self.adding_new_warranty_frame = AddNewWarrantyFrame(self.content_frame)
+        self.new_warranty_frame = NewWarrantyFrame(self.content_frame)
 
-        for frame in (self.all_warrenties_frame, self.adding_new_warranty_frame):
+        for frame in (self.all_warrenties_frame, self.new_warranty_frame):
             frame.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.all_warrenties_frame.lift()
 
-        self.adding_new_warranty_button = customtkinter.CTkButton(
-            self.adding_new_warranty_frame,
+        self.add_warranty_button = customtkinter.CTkButton(
+            self.new_warranty_frame,
             text="Add",
             font=self.font,
-            command=self.add_new_warranty,
+            command=self.add_warranty,
         )
-        self.adding_new_warranty_button.pack(
+        self.add_warranty_button.pack(padx=10, pady=(0, 10), side="bottom", anchor="e")
+
+        self.apply_update_warranty_button = customtkinter.CTkButton(
+            self.new_warranty_frame,
+            text="Apply",
+            font=self.font,
+            command=self.apply_update_warranty,
+        )
+        self.apply_update_warranty_button.pack(
             padx=10, pady=(0, 10), side="bottom", anchor="e"
         )
 
@@ -53,13 +62,21 @@ class App(customtkinter.CTk):
         )
         self.move_to_all_warranties_page_button.pack(padx=10, pady=(15, 10))
 
-        self.move_to_adding_new_warranty_page_button = customtkinter.CTkButton(
+        self.move_to_add_warranty_page_button = customtkinter.CTkButton(
             self.sidebar_frame,
             text="New",
             font=self.font,
-            command=self.move_to_adding_new_warranty_page,
+            command=self.move_to_add_warranty_page,
         )
-        self.move_to_adding_new_warranty_page_button.pack(padx=10, pady=(0, 10))
+        self.move_to_add_warranty_page_button.pack(padx=10, pady=(0, 10))
+
+        self.move_to_update_warranty_page_button = customtkinter.CTkButton(
+            self.sidebar_frame,
+            text="Update",
+            font=self.font,
+            command=self.move_to_update_warranty_page,
+        )
+        self.move_to_update_warranty_page_button.pack(padx=10, pady=(0, 10))
 
         self.open_facebook_button = customtkinter.CTkButton(
             self.sidebar_frame,
@@ -110,30 +127,66 @@ class App(customtkinter.CTk):
         self.all_warrenties_frame.list()
         self.all_warrenties_frame.lift()
 
-    def move_to_adding_new_warranty_page(self):
-        self.adding_new_warranty_frame.clear_entries()
-        self.adding_new_warranty_frame.lift()
+    def move_to_add_warranty_page(self):
+        self.apply_update_warranty_button.pack_forget()
+        self.add_warranty_button.pack(padx=10, pady=(0, 10), side="bottom", anchor="e")
 
-    def add_new_warranty(self):
-        name = self.adding_new_warranty_frame.name_entry
-        facebook = self.adding_new_warranty_frame.facebook_entry
-        phone_number = self.adding_new_warranty_frame.phone_number_entry
-        expired_date = self.adding_new_warranty_frame.expired_date_entry
-        note = self.adding_new_warranty_frame.note_entry
+        self.new_warranty_frame.clear_entries()
+        self.new_warranty_frame.lift()
 
-        if name == "" or facebook == "" or phone_number == "":
+    def move_to_update_warranty_page(self):
+        # new update will be applied via add/apply button
+        if not self.all_warrenties_frame.is_selected_button():
             return
 
+        self.add_warranty_button.pack_forget()
+        self.apply_update_warranty_button.pack(
+            padx=10, pady=(0, 10), side="bottom", anchor="e"
+        )
+        self.new_warranty_frame.clear_entries()
+
+        self.new_warranty_frame.insert_name_entry(
+            self.all_warrenties_frame.selected_warranty_name
+        )
+        self.new_warranty_frame.insert_facebook_entry(
+            self.all_warrenties_frame.selected_warranty_facebook
+        )
+        self.new_warranty_frame.insert_phone_number_entry(
+            self.all_warrenties_frame.selected_warranty_phone_number
+        )
+        self.new_warranty_frame.insert_expired_date(
+            self.all_warrenties_frame.selected_warranty_expired_datetime
+        )
+        self.new_warranty_frame.insert_note_entry(
+            self.all_warrenties_frame.selected_warranty_note
+        )
+
+        self.new_warranty_frame.lift()
+
+    def add_warranty(self):
         new_warranty = {
-            "name": name,
-            "facebook": facebook,
-            "phone_number": phone_number,
-            "expired_date": expired_date,
-            "note": note,
+            "name": self.new_warranty_frame.name_entry,
+            "facebook": self.new_warranty_frame.facebook_entry,
+            "phone_number": self.new_warranty_frame.phone_number_entry,
+            "expired_date": self.new_warranty_frame.expired_date_entry,
+            "note": self.new_warranty_frame.note_entry,
         }
         database.add_warranty(new_warranty)
 
-        self.adding_new_warranty_frame.clear_entries()
+        self.new_warranty_frame.clear_entries()
+
+    def apply_update_warranty(self):
+        new_warranty = {
+            "id": self.all_warrenties_frame.selected_warranty_id,
+            "name": self.new_warranty_frame.name_entry,
+            "facebook": self.new_warranty_frame.facebook_entry,
+            "phone_number": self.new_warranty_frame.phone_number_entry,
+            "expired_date": self.new_warranty_frame.expired_date_entry,
+            "note": self.new_warranty_frame.note_entry,
+        }
+        database.update_warranty(new_warranty)
+
+        self.new_warranty_frame.clear_entries()
 
     def open_facebook(self):
         if not self.all_warrenties_frame.is_selected_button():
