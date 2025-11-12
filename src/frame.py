@@ -29,56 +29,58 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
             label_fg_color="#F2F2F2",
         )
 
-        self.__current_unix_time = int(datetime.datetime.now().timestamp())
-        self.__warranties_info = {}
-        self.__selected_button = None
+        self.__current_unix_time = utils.get_current_unix_time()
+        self.__all_warranties = {}
+        self.__selected_warranty_button = None
 
         self.list()
 
     def is_selected_button(self):
-        return self.__selected_button
+        return self.__selected_warranty_button
 
     @property
     def selected_warranty_id(self):
-        return self.__warranties_info[self.__selected_button]["id"]
+        return self.__all_warranties[self.__selected_warranty_button]["id"]
 
     @property
     def selected_warranty_name(self):
-        return self.__warranties_info[self.__selected_button]["name"]
+        return self.__all_warranties[self.__selected_warranty_button]["name"]
 
     @property
     def selected_warranty_facebook(self):
-        return self.__warranties_info[self.__selected_button]["facebook"]
+        return self.__all_warranties[self.__selected_warranty_button]["facebook"]
 
     @property
     def selected_warranty_phone_number(self):
-        return self.__warranties_info[self.__selected_button]["phone_number"]
+        return self.__all_warranties[self.__selected_warranty_button]["phone_number"]
 
     @property
     def selected_warranty_expired_datetime(self):
-        return self.__warranties_info[self.__selected_button]["expired_datetime"]
+        return self.__all_warranties[self.__selected_warranty_button][
+            "expired_datetime"
+        ]
 
     @property
     def selected_warranty_status(self):
-        return self.__warranties_info[self.__selected_button]["warranty_status"]
+        return self.__all_warranties[self.__selected_warranty_button]["warranty_status"]
 
     @property
     def selected_warranty_note(self):
-        return self.__warranties_info[self.__selected_button]["note"]
+        return self.__all_warranties[self.__selected_warranty_button]["note"]
 
     def delete_selected_warranty(self):
-        if self.__selected_button:
-            warranty_id = self.__warranties_info[self.__selected_button]["id"]
+        if self.__selected_warranty_button:
+            warranty_id = self.__all_warranties[self.__selected_warranty_button]["id"]
             database.delete_warranty(warranty_id)
-            self.__selected_button.destroy()
-            self.__selected_button = None
+            self.__selected_warranty_button.destroy()
+            self.__selected_warranty_button = None
 
     def __do_selected(self, self_button: customtkinter.CTkButton):
-        if self.__selected_button:
-            self.__selected_button.configure(fg_color=self.__fg_color)
+        if self.__selected_warranty_button:
+            self.__selected_warranty_button.configure(fg_color=self.__fg_color)
 
-        self.__selected_button = self_button
-        self.__selected_button.configure(fg_color="#3B8ED0")
+        self.__selected_warranty_button = self_button
+        self.__selected_warranty_button.configure(fg_color="#3B8ED0")
 
     def __add_warranty_info(self, info):
         text = f"{info['name']}{' ' * (41 - len(info['name']))}{info['phone_number']}{' ' * (31 - len(str(info['phone_number'])))}{info['expired_datetime']}{' ' * (25 - len(info['expired_datetime']))}{info['warranty_status']}"
@@ -96,7 +98,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         )
         info_button.pack(fill="x", pady=(0, 5))
 
-        self.__warranties_info[info_button] = info
+        self.__all_warranties[info_button] = info
 
     def __get_warranty_status(self, expired_unix_time):
         if expired_unix_time - self.__current_unix_time <= 0:
@@ -105,8 +107,9 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
 
     def list(self):
         self.clear_items()
-        self.__warranties_info.clear()
-        self.__selected_button = None
+        self.__current_unix_time = utils.get_current_unix_time()
+        self.__all_warranties.clear()
+        self.__selected_warranty_button = None
 
         all_warrenties = database.get_all_warranties()
         for warranty in all_warrenties:

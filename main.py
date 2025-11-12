@@ -1,6 +1,5 @@
 import os
 import webbrowser
-import functools
 
 import customtkinter
 
