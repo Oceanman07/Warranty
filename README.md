@@ -13,15 +13,13 @@ https://docs.astral.sh/uv/#installation
 
 ### Environment setup
 ```bash
-uv venv 
+uv venv
+```
+```bash
+uv pip install .
 ```
 ```bash
 source .venv/bin/activate
-```
-
-### Install requirements
-```bash
-uv pip install .
 ```
 
 ### Development
