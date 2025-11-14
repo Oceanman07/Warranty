@@ -13,3 +13,5 @@ database.db
 testme/
 docs/
 .DS_Store
+main.spec
+Warranty.spec
