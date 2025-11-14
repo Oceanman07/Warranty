@@ -77,13 +77,13 @@ class App(customtkinter.CTk):
         )
         self.move_to_update_warranty_page_button.pack(padx=10, pady=(0, 10))
 
-        self.open_facebook_button = customtkinter.CTkButton(
+        self.open_warranty_facebook_button = customtkinter.CTkButton(
             self.sidebar_frame,
             text="Open facebook",
             font=self.font,
-            command=self.open_facebook,
+            command=self.open_warranty_facebook,
         )
-        self.open_facebook_button.pack(padx=10, pady=(0, 10))
+        self.open_warranty_facebook_button.pack(padx=10, pady=(0, 10))
 
         self.delete_warranty_button = customtkinter.CTkButton(
             self.sidebar_frame,
@@ -93,13 +93,13 @@ class App(customtkinter.CTk):
         )
         self.delete_warranty_button.pack(padx=10, pady=(0, 10))
 
-        self.change_appr_mode_button = customtkinter.CTkButton(
+        self.change_appearance_mode_button = customtkinter.CTkButton(
             self.sidebar_frame,
             text="Light",
             font=self.font,
             command=self.change_appearance_mode,
         )
-        self.change_appr_mode_button.pack(
+        self.change_appearance_mode_button.pack(
             padx=10,
             pady=(0, 10),
             side="bottom",
@@ -117,10 +117,10 @@ class App(customtkinter.CTk):
     def change_appearance_mode(self):
         if customtkinter.get_appearance_mode() == "Light":
             customtkinter.set_appearance_mode("dark")
-            self.change_appr_mode_button.configure(text="Dark")
+            self.change_appearance_mode_button.configure(text="Dark")
         else:
             customtkinter.set_appearance_mode("light")
-            self.change_appr_mode_button.configure(text="Light")
+            self.change_appearance_mode_button.configure(text="Light")
 
     def move_to_all_warranties_page(self):
         self.all_warrenties_frame.list()
@@ -134,7 +134,6 @@ class App(customtkinter.CTk):
         self.new_warranty_frame.lift()
 
     def move_to_update_warranty_page(self):
-        # new update will be applied via add/apply button
         if not self.all_warrenties_frame.is_selected_button():
             return
 
@@ -186,13 +185,14 @@ class App(customtkinter.CTk):
         database.update_warranty(new_warranty)
 
         self.new_warranty_frame.clear_entries()
+        self.all_warrenties_frame.list()
+        self.all_warrenties_frame.lift()
 
-    def open_facebook(self):
+    def open_warranty_facebook(self):
         if not self.all_warrenties_frame.is_selected_button():
             return
 
-        facebook = self.all_warrenties_frame.selected_warranty_facebook
-        webbrowser.open(facebook)
+        webbrowser.open(self.all_warrenties_frame.selected_warranty_facebook)
 
     def show_detail_warranty(self):
         if not self.all_warrenties_frame.is_selected_button():
