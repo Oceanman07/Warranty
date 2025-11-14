@@ -105,9 +105,11 @@ class App(customtkinter.CTk):
         if customtkinter.get_appearance_mode() == "Light":
             customtkinter.set_appearance_mode("dark")
             self.change_appearance_mode_button.configure(text="Dark")
+            self.all_warrenties_frame.configure(label_fg_color="#C4C4C4")
         else:
             customtkinter.set_appearance_mode("light")
             self.change_appearance_mode_button.configure(text="Light")
+            self.all_warrenties_frame.configure(label_fg_color="#F2F2F2")
 
     def move_to_all_warranties_page(self):
         self.all_warrenties_frame.list(self.warranty_functions_menu)

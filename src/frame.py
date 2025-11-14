@@ -26,6 +26,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
             master,
             label_text=self.__title,
             label_font=self.__font,
+            label_text_color=self.__text_color,
             label_anchor="w",
             label_fg_color="#F2F2F2",
         )
