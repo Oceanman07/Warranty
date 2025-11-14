@@ -35,8 +35,11 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         self.__all_warranties = {}
         self.__selected_warranty_button = None
 
-    def is_selected_button(self):
+    def is_selected_warranty_button(self):
         return self.__selected_warranty_button
+
+    def reset_selected_warranty_button(self):
+        self.__selected_warranty_button = None
 
     @property
     def selected_warranty_id(self):
@@ -67,13 +70,6 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
     @property
     def selected_warranty_note(self):
         return self.__all_warranties[self.__selected_warranty_button]["note"]
-
-    def delete_selected_warranty(self):
-        if self.__selected_warranty_button:
-            warranty_id = self.__all_warranties[self.__selected_warranty_button]["id"]
-            database.delete_warranty(warranty_id)
-            self.__selected_warranty_button.destroy()
-            self.__selected_warranty_button = None
 
     def __do_selected(self, self_button: customtkinter.CTkButton):
         if self.__selected_warranty_button:

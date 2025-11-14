@@ -123,7 +123,7 @@ class App(customtkinter.CTk):
         self.new_warranty_frame.lift()
 
     def move_to_update_warranty_page(self):
-        if not self.all_warrenties_frame.is_selected_button():
+        if not self.all_warrenties_frame.is_selected_warranty_button():
             return
 
         self.add_warranty_button.pack_forget()
@@ -178,13 +178,13 @@ class App(customtkinter.CTk):
         self.all_warrenties_frame.lift()
 
     def open_warranty_facebook(self):
-        if not self.all_warrenties_frame.is_selected_button():
+        if not self.all_warrenties_frame.is_selected_warranty_button():
             return
 
         webbrowser.open(self.all_warrenties_frame.selected_warranty_facebook)
 
     def show_detail_warranty(self):
-        if not self.all_warrenties_frame.is_selected_button():
+        if not self.all_warrenties_frame.is_selected_warranty_button():
             return
 
         detail_warranty_popup = DetailWarrantyPopop(self)
@@ -205,10 +205,13 @@ class App(customtkinter.CTk):
         )
 
     def delete_warranty(self):
-        if not self.all_warrenties_frame.is_selected_button():
+        if not self.all_warrenties_frame.is_selected_warranty_button():
             return
 
-        self.all_warrenties_frame.delete_selected_warranty()
+        warranty_id = self.all_warrenties_frame.selected_warranty_id
+        database.delete_warranty(warranty_id)
+
+        self.all_warrenties_frame.reset_selected_warranty_button()
         self.all_warrenties_frame.list(self.warranty_functions_menu)
         self.all_warrenties_frame.lift()
 
