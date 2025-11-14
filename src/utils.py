@@ -1,4 +1,9 @@
+import platform
 import datetime
+
+
+def is_Windows():
+    return platform.system() == "Windows"
 
 
 def get_current_unix_time():

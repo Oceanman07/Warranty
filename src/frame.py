@@ -99,9 +99,16 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         info_button.configure(
             command=functools.partial(self.__do_selected, info_button),
         )
-        info_button.bind(
-            "<Button-2>", functools.partial(self.__show_menu_functions, menu_functions)
-        )
+        if utils.is_Windows():
+            info_button.bind(
+                "<Button-3>",
+                functools.partial(self.__show_menu_functions, menu_functions),
+            )
+        else:
+            info_button.bind(
+                "<Button-2>",
+                functools.partial(self.__show_menu_functions, menu_functions),
+            )
         info_button.pack(fill="x", pady=(0, 5))
 
         self.__all_warranties[info_button] = info
