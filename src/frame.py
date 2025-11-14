@@ -1,3 +1,4 @@
+import tkinter
 import datetime
 import functools
 
@@ -32,8 +33,6 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         self.__current_unix_time = utils.get_current_unix_time()
         self.__all_warranties = {}
         self.__selected_warranty_button = None
-
-        self.list()
 
     def is_selected_button(self):
         return self.__selected_warranty_button
@@ -82,7 +81,10 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         self.__selected_warranty_button = self_button
         self.__selected_warranty_button.configure(fg_color="#3B8ED0")
 
-    def __add_warranty_info(self, info):
+    def __show_menu_functions(self, menu_functions: tkinter.Menu, event: tkinter.Event):
+        menu_functions.tk_popup(event.x_root, event.y_root)
+
+    def __add_warranty(self, info, menu_functions):
         text = f"{info['name']}{' ' * (41 - len(info['name']))}{info['phone_number']}{' ' * (31 - len(str(info['phone_number'])))}{info['expired_datetime']}{' ' * (25 - len(info['expired_datetime']))}{info['warranty_status']}"
         info_button = customtkinter.CTkButton(
             self,
@@ -96,6 +98,9 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
         info_button.configure(
             command=functools.partial(self.__do_selected, info_button),
         )
+        info_button.bind(
+            "<Button-2>", functools.partial(self.__show_menu_functions, menu_functions)
+        )
         info_button.pack(fill="x", pady=(0, 5))
 
         self.__all_warranties[info_button] = info
@@ -105,7 +110,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
             return "Expired"
         return "Active"
 
-    def list(self):
+    def list(self, menu_functions):
         self.clear_items()
         self.__current_unix_time = utils.get_current_unix_time()
         self.__all_warranties.clear()
@@ -122,7 +127,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
                 "note": warranty["note"],
                 "warranty_status": self.__get_warranty_status(warranty["expired_date"]),
             }
-            self.__add_warranty_info(info)
+            self.__add_warranty(info, menu_functions)
 
     def clear_items(self):
         for item in self.winfo_children():

@@ -1,4 +1,5 @@
 import os
+import tkinter
 import webbrowser
 
 import customtkinter
@@ -19,6 +20,22 @@ class App(customtkinter.CTk):
 
         self.font = customtkinter.CTkFont(family="JetBrains Mono")
 
+        # ============== MenuFunctionsForWarranty =================
+        self.warranty_functions_menu = tkinter.Menu(self, tearoff=0)
+        self.warranty_functions_menu.add_command(
+            label="More", command=self.show_detail_warranty
+        )
+        self.warranty_functions_menu.add_command(
+            label="Edit", command=self.move_to_update_warranty_page
+        )
+        self.warranty_functions_menu.add_command(
+            label="Open facebook", command=self.open_warranty_facebook
+        )
+        self.warranty_functions_menu.add_command(
+            label="Delete",
+            command=self.delete_warranty,
+        )
+
         # ============== MainContentFrame ==========
         self.content_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.content_frame.pack(
@@ -30,6 +47,9 @@ class App(customtkinter.CTk):
 
         for frame in (self.all_warrenties_frame, self.new_warranty_frame):
             frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+        # show all_warrenties_frame first
+        self.all_warrenties_frame.list(self.warranty_functions_menu)
         self.all_warrenties_frame.lift()
 
         self.add_warranty_button = customtkinter.CTkButton(
@@ -69,30 +89,6 @@ class App(customtkinter.CTk):
         )
         self.move_to_add_warranty_page_button.pack(padx=10, pady=(0, 10))
 
-        self.move_to_update_warranty_page_button = customtkinter.CTkButton(
-            self.sidebar_frame,
-            text="Update",
-            font=self.font,
-            command=self.move_to_update_warranty_page,
-        )
-        self.move_to_update_warranty_page_button.pack(padx=10, pady=(0, 10))
-
-        self.open_warranty_facebook_button = customtkinter.CTkButton(
-            self.sidebar_frame,
-            text="Open facebook",
-            font=self.font,
-            command=self.open_warranty_facebook,
-        )
-        self.open_warranty_facebook_button.pack(padx=10, pady=(0, 10))
-
-        self.delete_warranty_button = customtkinter.CTkButton(
-            self.sidebar_frame,
-            text="Delete",
-            font=self.font,
-            command=self.delete_warranty,
-        )
-        self.delete_warranty_button.pack(padx=10, pady=(0, 10))
-
         self.change_appearance_mode_button = customtkinter.CTkButton(
             self.sidebar_frame,
             text="Light",
@@ -105,15 +101,6 @@ class App(customtkinter.CTk):
             side="bottom",
         )
 
-        # ============== Popup ==============
-        self.show_detail_warranty_button = customtkinter.CTkButton(
-            self.sidebar_frame,
-            text="More",
-            font=self.font,
-            command=self.show_detail_warranty,
-        )
-        self.show_detail_warranty_button.pack(padx=10, pady=(0, 10))
-
     def change_appearance_mode(self):
         if customtkinter.get_appearance_mode() == "Light":
             customtkinter.set_appearance_mode("dark")
@@ -123,7 +110,7 @@ class App(customtkinter.CTk):
             self.change_appearance_mode_button.configure(text="Light")
 
     def move_to_all_warranties_page(self):
-        self.all_warrenties_frame.list()
+        self.all_warrenties_frame.list(self.warranty_functions_menu)
         self.all_warrenties_frame.lift()
 
     def move_to_add_warranty_page(self):
@@ -185,7 +172,7 @@ class App(customtkinter.CTk):
         database.update_warranty(new_warranty)
 
         self.new_warranty_frame.clear_entries()
-        self.all_warrenties_frame.list()
+        self.all_warrenties_frame.list(self.warranty_functions_menu)
         self.all_warrenties_frame.lift()
 
     def open_warranty_facebook(self):
@@ -220,7 +207,7 @@ class App(customtkinter.CTk):
             return
 
         self.all_warrenties_frame.delete_selected_warranty()
-        self.all_warrenties_frame.list()
+        self.all_warrenties_frame.list(self.warranty_functions_menu)
         self.all_warrenties_frame.lift()
 
 
