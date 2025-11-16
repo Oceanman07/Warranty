@@ -1,13 +1,14 @@
 import os
 import tkinter
 import webbrowser
+import time
 
 import customtkinter
 
 from src import database
 from src.constants import DATABASE_PATH
 from src.frame import AllWarrentiesFrame, NewWarrantyFrame, SidebarFrame
-from src.popup import DetailWarrantyPopop
+from src.popup import DetailWarrantyPopop, DeletionConfirmPopup
 
 
 class App(customtkinter.CTk):
@@ -208,12 +209,17 @@ class App(customtkinter.CTk):
         if not self.all_warrenties_frame.is_selected_warranty_button():
             return
 
-        warranty_id = self.all_warrenties_frame.selected_warranty_id
-        database.delete_warranty(warranty_id)
+        confirmer = DeletionConfirmPopup(self)
+        confirmer.grab_set()
+        confirmer.wait_window()
 
-        self.all_warrenties_frame.reset_selected_warranty_button()
-        self.all_warrenties_frame.list(self.warranty_functions_menu)
-        self.all_warrenties_frame.lift()
+        if confirmer.is_confirmed():
+            warranty_id = self.all_warrenties_frame.selected_warranty_id
+            database.delete_warranty(warranty_id)
+
+            self.all_warrenties_frame.reset_selected_warranty_button()
+            self.all_warrenties_frame.list(self.warranty_functions_menu)
+            self.all_warrenties_frame.lift()
 
 
 def main():

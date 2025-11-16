@@ -1,3 +1,6 @@
+import threading
+import time
+
 import customtkinter
 
 
@@ -81,3 +84,44 @@ class DetailWarrantyPopop(customtkinter.CTkToplevel):
         note_box.insert("0.0", selected_warranty_note)
         note_box.pack(padx=10, pady=(0, 10), fill="both", expand=True)
         note_box.configure(state="disable")
+
+
+class DeletionConfirmPopup(customtkinter.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.title("")
+        self.geometry("390x140")
+
+        customtkinter.CTkLabel(
+            self,
+            text="Do you reall want to delete this warranty?",
+            font=("JetBrains Mono", 16),
+            wraplength=400,
+        ).pack(padx=10, pady=10)
+
+        self.__confirm_button = customtkinter.CTkButton(
+            self, text="confirm", command=self.__confirm
+        )
+        self.__confirm_button.pack(
+            padx=(5, 10), pady=10, fill="x", expand=True, side="right", anchor="s"
+        )
+
+        self.__cancel_button = customtkinter.CTkButton(
+            self, text="cannel", command=self.__cancel
+        )
+        self.__cancel_button.pack(
+            padx=(10, 5), pady=10, fill="x", expand=True, side="left", anchor="s"
+        )
+
+        self.__is_confirmed = False
+
+    def is_confirmed(self):
+        return self.__is_confirmed
+
+    def __confirm(self):
+        self.__is_confirmed = True
+        self.destroy()
+
+    def __cancel(self):
+        self.destroy()
