@@ -38,7 +38,7 @@ class App(customtkinter.CTk):
         )
 
         # ============== MainContentFrame ==========
-        self.content_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.content_frame = customtkinter.CTkFrame(self, fg_color="transparent")
         self.content_frame.pack(
             padx=(5, 10), pady=10, side="right", fill="both", expand=True
         )

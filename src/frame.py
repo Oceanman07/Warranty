@@ -29,6 +29,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
             label_text_color=self.__text_color,
             label_anchor="w",
             label_fg_color="#F2F2F2",
+            fg_color="transparent",
         )
 
         self.__current_unix_time = utils.get_current_unix_time()
@@ -140,7 +141,7 @@ class AllWarrentiesFrame(customtkinter.CTkScrollableFrame):
 
 class NewWarrantyFrame(customtkinter.CTkFrame):
     def __init__(self, master):
-        super().__init__(master)
+        super().__init__(master, fg_color="transparent")
         self.__font = customtkinter.CTkFont(family="JetBrains Mono", size=19)
 
         customtkinter.CTkLabel(self, text="Full name:", font=self.__font).pack(
